@@ -68,18 +68,22 @@ export async function getGit() {
 	if (git || git === null) {
 		return git;
 	}
+	console.log(extensions.getExtension('vscode.git')?.id, extensions.getExtension('vscode.git')?.isActive);
 
 	try {
 		log(LogLevel.Debug, 'Loading git extension');
 		const gitExtension = extensions.getExtension<GitExtension>('vscode.git');
 		if (!gitExtension?.isActive) {
 			log(LogLevel.Trace, 'Git extension not activated, activating...');
+			console.log('Git extension not activated, activating...');
 			await gitExtension?.activate();
+			console.log('Git extenstion active? ', gitExtension?.isActive);
 		}
 		git = gitExtension?.exports.getAPI(1);
 	} catch (error) {
 		git = null;
 		log(LogLevel.Error, `Failed to load git extension, is git installed?; ${error as string}`);
+		console.log(`Failed to load git extension, is git installed?; ${error as string}`);
 	}
 
 	return git;
